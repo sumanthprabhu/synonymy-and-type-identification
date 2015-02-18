@@ -1,0 +1,39 @@
+import sys
+
+from nltk.corpus import wordnet as wn
+from collections import Counter
+
+def main(argv):
+	
+	with open(argv[1], "rb") as input_data:
+
+		term = input_data.readline()
+		neighbours = input_data.readlines()
+
+		candidates = []
+
+		for neighbour in neighbours:
+
+			#add entries to test set
+			# list_1 = [x.hypernym_paths() for x in wn.synsets(term)]
+			# list_1 = [val for sublist in list_1 for val in sublist]
+			# list_1 = [val for sublist in list_1 for val in sublist]
+
+			# list_2 = [x.hypernym_paths() for x in wn.synsets(neighbour)]
+			# list_2 = [val for sublist in list_2 for val in sublist]
+			# list_2 = [val for sublist in list_2 for val in sublist]
+
+			# set(list_1).intersection(set(list_2))
+
+			candidates.append(
+				x.lowest_common_hypernyms(y) for x in wn.synsets(term) \
+				for y in wn.synsets(neighbour)
+				)
+		candidates = [val for sublist in candidates for val in sublist]
+		counts = Counter(candidates)
+		candidates = sorted(candidates, key=counts.get, reverse= True)
+
+		print candidates[0]
+		
+if __name__ == "__main__":
+	main(sys.argv)
